@@ -1,5 +1,51 @@
 # Introduction to Linkerd
 
+## Full application architecture
+
+<hr/>
+<br/>
+
+```
+
++------------+     +---------------+    +--------------+
+| videos-web +---->+ playlists-api +--->+ playlists-db |
+|            |     |               |    |              |
++------------+     +-----+---------+    +--------------+
+                         |
+                         v
+                   +-----+------+       +-----------+
+                   | videos-api +------>+ videos-db |
+                   |            |       |           |
+                   +------------+       +-----------+
+
+```
+
+```
+servicemesh.demo/home --> videos-web
+servicemesh.demo/api/playlists --> playlists-api
+
+
+                              servicemesh.demo/home/           +--------------+
+                              +------------------------------> | videos-web   |
+                              |                                |              |
+servicemesh.demo/home/ +------+------------+                   +--------------+
+   +------------------>+ingress-nginx      |
+                       |Ingress controller |
+                       +------+------------+                   +---------------+    +--------------+
+                              |                                | playlists-api +--->+ playlists-db |
+                              +------------------------------> |               |    |              |
+                              servicemesh.demo/api/playlists   +-----+---------+    +--------------+
+                                                                     |
+                                                                     v
+                                                               +-----+------+       +-----------+
+                                                               | videos-api +------>+ videos-db |
+                                                               |            |       |           |
+                                                               +------------+       +-----------+
+
+
+
+```
+
 ## We need a Kubernetes cluster
 
 Lets create a Kubernetes cluster to play with using [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
@@ -120,7 +166,7 @@ linkerd check --pre
 ## Get the YAML
 
 ```
-linkerd install > ./linkerd/manifest/linkerd-edge-20.10.1.yaml
+linkerd install > ./servicemesh/linkerd/manifest/linkerd-edge-20.10.1.yaml
 ```
 
 ## Install Linkerd
@@ -192,7 +238,10 @@ We'll make a call to `/home/` and to simulate the browser making a call to get t
 we'll make a follow up call to `/api/playlists`
 
 ```
-While ($true) { curl -UseBasicParsing http://servicemesh.demo/home/;curl -UseBasicParsing http://servicemesh.demo/api/playlists; Start-Sleep -Seconds 1;}
+
+while :; do curl -X GET http://servicemesh.demo/home ; sleep 1; done
+while :; do curl -X GET http://servicemesh.demo/api/playlists ; sleep 1; done
+
 
 linkerd -n default check --proxy
 
