@@ -33,7 +33,7 @@ spec:
             - name: "REDIS_PORT"
               value: "6379"
             - name: "FLAKY"
-              value: "true"
+              value: "false"
 ---
 apiVersion: v1
 kind: Service

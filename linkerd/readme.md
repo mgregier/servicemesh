@@ -103,7 +103,7 @@ Let's fake one by adding the following entry in our hosts (`C:\Windows\System32\
 ## Let's access our applications via Ingress
 
 ```
-kubectl -n ingress-nginx port-forward deploy/nginx-ingress-controller 80
+sudo kubectl -n ingress-nginx port-forward deploy/nginx-ingress-controller 80
 ```
 
 ## Access our application in the browser
